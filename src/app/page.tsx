@@ -1,21 +1,18 @@
 'use client'
-import Link from 'next/link'
 import React from 'react'
 
-function fetcher() {
-	return fetch(
+async function fetcher() {
+	const res = await fetch(
 		`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`
 	)
-		.then(res => res.json())
-		.then(data => data.splice(0, 10))
+	return await res.json()
 }
 
 async function itemFetcher(item: number) {
 	const res = await fetch(
 		`https://hacker-news.firebaseio.com/v0/item/${item}.json?print=pretty`
 	)
-	const data = await res.json()
-	return data
+	return await res.json()
 }
 
 export interface Story {
@@ -46,11 +43,11 @@ export default function Home() {
 	}, [])
 
 	return (
-		<main className='flex p-6'>
-			<aside className='flex flex-col gap-8 max-w-sm'>
+		<main className='flex'>
+			<aside className='flex flex-col max-w-md overflow-auto'>
 				{items.map(item => {
 					return (
-						<div key={item.id}>
+						<div key={item.id} className='border p-2'>
 							<h1>{item.title}</h1>
 							<div className='flex'>
 								<p className='opacity-50'>Posted by {item.by}</p>
@@ -66,9 +63,11 @@ export default function Home() {
 					)
 				})}
 			</aside>
-			<section className='flex-1 max-w-xl'>
+			<section className='flex-1'>
 				{selectedItem ? (
-					<iframe src={selectedItem} height='100%' width='100%'></iframe>
+					<div className='w-full h-screen'>
+						<iframe src={selectedItem} height='100%' width='100%'></iframe>
+					</div>
 				) : (
 					<h1>Nothing selected</h1>
 				)}
