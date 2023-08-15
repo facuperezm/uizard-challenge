@@ -26,7 +26,7 @@ async function fetcher(): Promise<Story[]> {
 		`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`
 	)
 	const data = await res.json()
-	return await data.slice(0, 10)
+	return await data.slice(0, 50)
 }
 
 async function itemFetcher(item: number): Promise<Story> {
@@ -42,35 +42,41 @@ export default async function RootLayout({
 	children: React.ReactNode
 }) {
 	const topStoryIds = await fetcher()
-	const items = await Promise.all(
+	const posts = await Promise.all(
 		topStoryIds.map(item => itemFetcher(item as any))
 	)
 	return (
 		<html lang='en' className='h-screen'>
-			<body className={inter.className}>
-				<nav className='w-full text-center bg-yellow-300 py-3'>
-					<Link href='/'>Uizard Hackernews Reader</Link>
-				</nav>
-				<div className='flex'>
-					<aside className='flex flex-col max-w-md overflow-auto overflow-y-scroll'>
-						{items.map(({ id, title, by, url }) => {
-							return (
-								<div key={id} className='border p-2'>
-									<h1>{title}</h1>
-									<div className='flex'>
-										<p className='opacity-50'>Posted by {by}</p>
-										<form action='/item' className='ml-auto'>
-											<button name='search' value={id}>
-												Visit website {'>>'}
-											</button>
-										</form>
-									</div>
-								</div>
-							)
-						})}
+			<body className='flex flex-col h-full'>
+				<header>
+					<nav className='w-full text-center bg-yellow-300 py-3'>
+						<Link href='/'>Uizard Hackernews Reader</Link>
+					</nav>
+				</header>
+				<main className='flex flex-row h-full overflow-hidden'>
+					<aside className='max-w-sm overflow-y-auto'>
+						<ul>
+							{posts.map(({ id, title, by }) => {
+								return (
+									<li key={id} className='border-b border-r space-y-1 p-2'>
+										<h1 className='truncate'>{title}</h1>
+										<div className='flex'>
+											<p className='opacity-50'>Posted by {by}</p>
+											<form action='/item' className='ml-auto'>
+												<button name='search' value={id}>
+													Visit website {'>>'}
+												</button>
+											</form>
+										</div>
+									</li>
+								)
+							})}
+						</ul>
 					</aside>
-					{children}
-				</div>
+					<section className='w-full max-h-screen flex flex-grow overflow-y-auto'>
+						{children}
+					</section>
+				</main>
 				<footer>
 					<p className='text-center text-xs py-3'>
 						Created with 🖤 by{' '}
