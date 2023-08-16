@@ -11,7 +11,7 @@ This is the project running online [uizard-challenge-facuperezm.vercel.app/](htt
 To deploy this project on your machine do
 
 ```bash
-  git clone <repository>
+  git clone https://github.com/facuperezm/uizard.git
 ```
 
 ```bash
