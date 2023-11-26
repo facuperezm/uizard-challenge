@@ -22,7 +22,7 @@ To deploy this project on your machine do
 ```
 or 
 ```bash
-  pnpm dev
+  npm run dev
 ```
 
 ## Tech Stack
